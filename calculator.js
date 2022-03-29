@@ -1,162 +1,75 @@
 //--------------------const-----------------------
-const MAXIMUM_SCREEN_NUMBERS = 17;
-const MAXIMUM_TOP_SCREEN_NUMBERS = 25;
-const NUMBER_ONE = '1';
-const NUMBER_TWO = '2';
-const NUMBER_THREE = '3';
-const NUMBER_FOUR = '4';
-const NUMBER_FIVE = '5';
-const NUMBER_SIX = '6';
-const NUMBER_SEVEN = '7';
-const NUMBER_EIGHT = '8';
-const NUMBER_NINE = '9';
-const NUMBER_ZERO = '0';
-const NUMBER_DOUBLE_ZERO ="00";
+const MAXIMUM_SCREEN_NUMBERS = 35;
+const MAXIMUM_TOP_SCREEN_NUMBERS = 40;
+const MAXIMUM_LENGHT_TARGET = 3;
 const CLEAR = '';
-const PLUS_SIGN = '+';
-const SUB_SIGN = '-';
-const DIV_SIGN = '/';
-const MUL_SIGN = 'x';
-const POINT_SIGN = '.';
 const EQUAL_SIGN = '=';
-
-const buttons = document.getElementsByTagName('button');
+const calculation = document.getElementById('calculation');
+const outPut = document.getElementById('result');
+const pressedOnCalculator = document.getElementById('calculator');
 
 //---------------variables---------------------
-let continuesToCalculation = false;//When we do calculation upon calculation
+let continuesToCalculation = false; //When we do calculation upon calculation
 let outOfScreen = false;
-let outPut = document.getElementById('result');
-let calculation = document.getElementById('calculation');
 
-//The function gets click button from user and checks if it has pressed
-//on a button between 0 to 9, 00 and then adds the number to calculation
-function buttonsNumber(buttonPressed) {
-    
-    switch (buttonPressed) {
 
-        case NUMBER_ONE:
-            calculation.innerHTML += '1';
-            break;
-        case NUMBER_TWO:
-            calculation.innerHTML += '2';
-            break;
-        case NUMBER_THREE:
-            calculation.innerHTML += '3';
-            break;
-        case NUMBER_FOUR:
-            calculation.innerHTML += '4';
-            break;
-        case NUMBER_FIVE:
-            calculation.innerHTML += '5';
-            break;
-        case NUMBER_SIX:
-            calculation.innerHTML += '6';
-            break;
-        case NUMBER_SEVEN:
-            calculation.innerHTML += '7';
-            break;
-        case NUMBER_EIGHT:
-            calculation.innerHTML += '8';
-            break;
-        case NUMBER_NINE:
-            calculation.innerHTML += '9';
-            break;
-        case NUMBER_ZERO:
-            calculation.innerHTML += '0';
-            break;
-        case NUMBER_DOUBLE_ZERO:
-            calculation.innerHTML += '00';
-            break;
-    }
+//The function handles button clicks
+function handleTheClick(event, calculation, continuesToCalculation) {
 
+	
+	if (Number.isInteger(Number(event.target.innerHTML)))
+		if (!continuesToCalculation && calculation.textContent.length < MAXIMUM_TOP_SCREEN_NUMBERS) {
+			continuesToCalculation = true;
+			calculation.innerHTML += event.target.innerHTML;
+		}
+		else;
+		//If we are here then the user clicked on the calculator or operation button
+	else if (event.target.innerHTML.length < MAXIMUM_LENGHT_TARGET)
+		buttonsOperations(event.target.innerHTML);
 }
 
-//The function gets click button from user and checks if it has pressed
-//on operation button
-function buttonsOperations(buttonPressed) {
-    
-    switch (buttonPressed) {
+//The function handles clicks on operations like(+,-.,-..)
+//--------------buttonsOperations-------------------
+function buttonsOperations(valuePressed) {
 
-        case EQUAL_SIGN:
-            temp = eval(calculation.textContent.replace('x', '*'));
+	switch (valuePressed) {
 
-            if (temp.toString().length > MAXIMUM_SCREEN_NUMBERS) {
-                outOfScreen = true;
-                outPut.innerHTML = "Result out of screen";
-                calculation.innerHTML = CLEAR;
-            }
-            else {
-                continuesToCalculation = true;
-                outPut.innerHTML = eval(calculation.textContent.replace('x', '*'));
-            }
-            break;
+		case 'DE'://Deletes last value
+			calculation.innerHTML = calculation.textContent
+				.slice(0, calculation.textContent.length - 1);
+			break;
 
-        case PLUS_SIGN:
-            continuesToCalculation = false;
-            calculation.innerHTML += '+';
-            break;
+		case 'AC':
+			continuesToCalculation = false;
+			calculation.innerHTML = outPut.innerHTML = CLEAR;
+			break;
 
-        case SUB_SIGN:
-            continuesToCalculation = false;
-            calculation.innerHTML += '-';
-            break;
+		case EQUAL_SIGN:
 
-        case DIV_SIGN:
-            continuesToCalculation = false;
-            calculation.innerHTML += '/';
-            break;
+			let temp = eval(calculation.textContent.replace('x', '*'));
 
-        case MUL_SIGN:
-            double = true;
-            continuesToCalculation = false;
-            calculation.innerHTML += 'x';
-            break;
-
-        case POINT_SIGN:
-            calculation.innerHTML += '.';
-            break;
-
-        case 'DE':     
-            calculation.innerHTML = calculation.textContent
-                .slice(0, calculation.textContent.length - 1);
-            break;
-
-        case 'AC':
-            continuesToCalculation = false;
-            calculation.innerHTML = outPut.innerHTML = CLEAR;
-            break;
-    }
+			if (temp.toString().length > MAXIMUM_SCREEN_NUMBERS) {
+				outOfScreen = true;
+				outPut.innerHTML = "Result out of screen";
+				calculation.innerHTML = CLEAR;
+			} else {
+				continuesToCalculation = true;//Calculation upon calculation
+				calculation.innerHTML = temp;
+				outPut.innerHTML = temp;
+			}
+			break;
+		default:
+			continuesToCalculation = false;
+			calculation.innerHTML += valuePressed;//Inserts operation
+	}
 }
 
-//The function checks if the numbers out of screen,
-//if it is, clears the screen 
-function isOutOfScreen() {
+pressedOnCalculator.addEventListener('click', function (event) {
+	handleTheClick(event, calculation, continuesToCalculation)
+})
 
-    if (outOfScreen) {//When the solution out of screen
-        outOfScreen = false;
-        outPut.innerHTML = CLEAR;
-        temp = CLEAR;
-    }
-
+if (outOfScreen) { //When the solution out of screen
+	outOfScreen = false;
+	outPut.innerHTML = CLEAR;
 }
 
-for (let button of buttons) {
-
-    let temp;
-    
-    button.addEventListener('click', (event) => {
-
-        isOutOfScreen();
-
-        //checks if the numbers out of screen
-        if (calculation.textContent.length < MAXIMUM_TOP_SCREEN_NUMBERS) 
-            if (!continuesToCalculation)
-                buttonsNumber(button.innerHTML);
-
-            buttonsOperations(button.innerHTML)
-
-            if (continuesToCalculation)
-                calculation.innerHTML = outPut.textContent;
-        });
-    
-}
