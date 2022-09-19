@@ -53,7 +53,7 @@ function buttonsOperations(valuePressed) {
 				outPut.innerHTML = "Result out of screen";
 				calculation.innerHTML = CLEAR;
 			} else {
-				continuesToCalculation = true;//Calculation upon calculation
+				continuesToCalculation = true;//Calculation on calculation
 				calculation.innerHTML = temp;
 				outPut.innerHTML = temp;
 			}
