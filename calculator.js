@@ -18,10 +18,9 @@ function handleTheClick(event, calculation, continuesToCalculation) {
 
 	
 	if (Number.isInteger(Number(event.target.innerHTML)))
-		if (!continuesToCalculation && calculation.textContent.length < MAXIMUM_TOP_SCREEN_NUMBERS) {
-			continuesToCalculation = true;
+		if (!continuesToCalculation && calculation.textContent.length < MAXIMUM_TOP_SCREEN_NUMBERS) 
 			calculation.innerHTML += event.target.innerHTML;
-		}
+		
 		else;
 		//If we are here then the user clicked on the calculator or operation button
 	else if (event.target.innerHTML.length < MAXIMUM_LENGHT_TARGET)
